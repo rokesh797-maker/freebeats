@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Unlimited Downloads - Unlimited Fun</title>
+  <style>
+    :root{
+      --bg:#0b1020;--panel:#121936;--muted:#7b86b2;--text:#e8ecff;--accent:#8ab4ff;--accent2:#9cffd0;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;background:linear-gradient(180deg,#0b1020,#0a0f1e 40%,#0b0e1a);color:var(--text)}
+    header{position:sticky;top:0;z-index:5;background:rgba(11,16,32,.7);backdrop-filter:blur(8px);border-bottom:1px solid #1e264a}
+    .wrap{max-width:1100px;margin:auto;padding:16px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 10px 30px rgba(138,180,255,.25)}
+    h1{font-size:18px;margin:0}
+
+    .toolbar{display:grid;grid-template-columns:1fr 200px 200px;gap:12px;margin-top:12px}
+    .input, select{width:100%;padding:12px 14px;border-radius:12px;background:#0e1430;border:1px solid #212a56;color:var(--text)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;padding:18px}
+    .card{background:var(--panel);border:1px solid #1b2550;border-radius:16px;padding:14px;box-shadow:0 6px 24px rgba(10,14,32,.35)}
+    .meta{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+    .tag{font-size:12px;color:var(--muted);padding:4px 8px;border:1px solid #263062;border-radius:999px}
+    .title{font-weight:600;margin:2px 0 8px}
+    .buttons{display:flex;gap:8px}
+    .btn{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 12px;border-radius:12px;border:1px solid #273165;background:#0d1536;color:var(--text);cursor:pointer}
+    .btn.primary{background:linear-gradient(135deg,#2b49ff,#00e3a1);border:none}
+    .btn[disabled]{opacity:.5;cursor:not-allowed}
+    audio{width:100%;height:34px;margin:8px 0 10px}
+    .cap{color:var(--muted);font-size:13px;margin:8px 0 0}
+    footer{border-top:1px solid #1e264a;color:#93a1d6}
+    .pill{display:inline-block;font-size:12px;padding:6px 10px;border:1px solid #2a3568;border-radius:999px;margin-right:8px}
+    .notice{background:#10183a;border:1px dashed #2a3a84;border-radius:12px;padding:10px 12px;margin:12px 0;color:#b3c2ff}
+    .soft{color:#b9c7ff}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <div class="brand">
+        <div class="logo"></div>
+        <div>
+          <h1>Unlimited Downloads - Unlimited Fun</h1>
+          <div class="soft">No login No more Frustrations • 3 downloads/day • Royalty‑free (demo)</div>
+        </div>
+      </div>
+      <div class="toolbar">
+        <input id="search" class="input" placeholder="Search (e.g., lofi, trap, piano, 90bpm, C minor)" />
+        <select id="genre">
+          <option value="">All genres</option>
+          <option>Lo‑Fi</option>
+          <option>Hip‑Hop</option>
+          <option>Trap</option>
+          <option>EDM</option>
+          <option>Afrobeats</option>
+          <option>Ambient</option>
+        </select>
+        <select id="type">
+          <option value="">All types</option>
+          <option>Loop</option>
+          <option>One‑shot</option>
+          <option>Drum</option>
+          <option>Melody</option>
+          <option>Bass</option>
+        </select>
+      </div>
+      <div class="wrap notice" id="limitBox" style="display:none"></div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="cap">Daily downloads used: <span id="count">0</span>/3</div>
+    <div id="grid" class="grid"></div>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p class="cap">Tip: Host your audio files on cloud storage (S3, Cloudflare R2, Google Drive direct links) and place those URLs in the dataset below. This page is 100% static and can be deployed to GitHub Pages/Netlify.</p>
+      <div>
+        <span class="pill">Static HTML/JS</span>
+        <span class="pill">Client‑side download limit</span>
+        <span class="pill">No login</span>
+      </div>
+      <p class="cap">Disclaimer: Client‑side limits are easy to bypass by tech‑savvy users. For hard limits, you need a backend or serverless function logging IP/device.</p>
+    </div>
+  </footer>
+
+<script>
+// ======= Simple dataset (replace with your own) =======
+const SAMPLES = [
+  {
+    id: 'lofi‑piano‑90bpm',
+    title: 'Lo‑Fi Piano Loop – 90 BPM – C minor',
+    genre: 'Lo‑Fi',
+    type: 'Melody',
+    bpm: 90,
+    key: 'Cm',
+    // Replace with your real audio URLs (MP3 recommended)
+    url: 'https://mega.nz/file/fo5DHT6a#mXd3cKO0mXxS_52Wj2vaL8lZKjEI94Qtnbe-ckbsV-E.mp3'
+  },
+  {
+    id: 'hiphop‑drum‑97bpm',
+    title: 'Hip‑Hop Drum Loop – 97 BPM',
+    genre: 'Hip‑Hop',
+    type: 'Drum',
+    bpm: 97,
+    key: '-',
+    url: 'https://mega.nz/file/b5wQ3TyA#zZE1jC8s-W34U9SobtE1Y0BCzH0RYndJEt_tp-U-y9U.mp3'
+  },
+  {
+    id: 'trap‑808‑140bpm',
+    title: 'Trap 808 One‑Shot',
+    genre: 'Trap',
+    type: 'One‑shot',
+    bpm: 140,
+    key: '-',
+    url: 'https://files.freemusicarchive.org/storage-freemusicarchive-org/music/no_curator/Komiku/Komiku_-_It_is_coming/Komiku_-_It_Is_Coming.mp3'
+  },
+  {
+    id: 'ambient‑pad‑70bpm',
+    title: 'Ambient Pad – 70 BPM – G',
+    genre: 'Ambient',
+    type: 'Loop',
+    bpm: 70,
+    key: 'G',
+    url: 'https://files.freemusicarchive.org/storage-freemusicarchive-org/music/no_curator/Komiku/Komiku_-_Pouvoir_magique/Komiku_-_Pouvoir_magique.mp3'
+  }
+];
+
+// ======= Daily download limit (client-side) =======
+const DAILY_LIMIT = 3;
+const COUNT_KEY = 'dlCount_v1';
+const DATE_KEY  = 'dlDate_v1';
+
+function todayStr(){
+  const d = new Date();
+  // Use local date (YYYY-MM-DD)
+  return d.getFullYear()+ '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+
+function readCount(){
+  const last = localStorage.getItem(DATE_KEY);
+  const today = todayStr();
+  if(last !== today){
+    localStorage.setItem(DATE_KEY, today);
+    localStorage.setItem(COUNT_KEY, '0');
+  }
+  return parseInt(localStorage.getItem(COUNT_KEY) || '0', 10);
+}
+
+function incCount(){
+  const c = readCount() + 1;
+  localStorage.setItem(COUNT_KEY, String(c));
+  return c;
+}
+
+function updateUI(){
+  const used = readCount();
+  const countEl = document.getElementById('count');
+  countEl.textContent = used;
+  const over = used >= DAILY_LIMIT;
+  document.querySelectorAll('[data-dl]')
+    .forEach(btn => btn.disabled = over);
+  const box = document.getElementById('limitBox');
+  if(over){
+    box.style.display = 'block';
+    box.textContent = `Daily limit reached: ${DAILY_LIMIT} downloads used. Come back tomorrow!`;
+  }else{
+    box.style.display = 'none';
+  }
+}
+
+function downloadSample(url){
+  const used = readCount();
+  if(used >= DAILY_LIMIT){
+    updateUI();
+    return;
+  }
+  // Open in a new tab to start download/stream.
+  window.open(url, '_blank', 'noopener');
+  const n = incCount();
+  updateUI();
+}
+
+// ======= Render cards =======
+function cardTemplate(s){
+  return `
+    <div class="card">
+      <div class="meta">
+        <span class="tag">${s.genre}</span>
+        <span class="tag">${s.type}</span>
+        <span class="tag">${s.bpm} BPM</span>
+        <span class="tag">Key: ${s.key}</span>
+      </div>
+      <div class="title">${s.title}</div>
+      <audio controls preload="none">
+        <source src="${s.url}" type="audio/mpeg" />
+      </audio>
+      <div class="buttons">
+        <button class="btn" onclick="this.previousElementSibling.play()">▶︎ Preview</button>
+        <button class="btn primary" data-dl onclick="downloadSample('${s.url}')">⬇ Download</button>
+      </div>
+    </div>`;
+}
+
+function render(list){
+  const grid = document.getElementById('grid');
+  grid.innerHTML = list.map(cardTemplate).join('');
+  updateUI();
+}
+
+// ======= Filtering & search =======
+function normalize(t){return (t||'').toLowerCase();}
+function applyFilters(){
+  const q = normalize(document.getElementById('search').value);
+  const g = document.getElementById('genre').value;
+  const t = document.getElementById('type').value;
+  const out = SAMPLES.filter(s=>{
+    const m1 = !g || s.genre===g;
+    const m2 = !t || s.type===t;
+    const str = `${s.title} ${s.genre} ${s.type} ${s.bpm} ${s.key}`.toLowerCase();
+    const m3 = !q || str.includes(q);
+    return m1 && m2 && m3;
+  });
+  render(out);
+}
+
+['search','genre','type'].forEach(id=>{
+  document.addEventListener('DOMContentLoaded', ()=>{
+    const el = document.getElementById(id);
+    el && el.addEventListener('input', applyFilters);
+    el && el.addEventListener('change', applyFilters);
+  });
+});
+
+// Init
+document.addEventListener('DOMContentLoaded', ()=>{
+  render(SAMPLES);
+});
+</script>
+</body>
+</html>
